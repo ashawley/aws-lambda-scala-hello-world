@@ -12,6 +12,8 @@ trait LambdaApp {
    */
   def handler(): java.util.List[String]
 
+  def cleanUp() = {}
+
   /***
    * Driver for testing handler locally
    */ 
@@ -37,6 +39,8 @@ trait LambdaApp {
     println("[")
     println("  " + result.asScala.map(escString(_)).mkString(",\n  "))
     println("]")
+
+    cleanUp()
   }
 
   def escString(s: String) =
