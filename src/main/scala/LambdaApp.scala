@@ -26,7 +26,7 @@ trait LambdaApp {
     val t0 = System.nanoTime
     val result = handler()
     val t1 = System.nanoTime
-    val duration = (t1 - t0) / 1000.0
+    val duration = (t1 - t0) / 1e6
 
     val env = Runtime.getRuntime
     val memorySize = env.totalMemory / 1024 / 1024
