@@ -1,13 +1,21 @@
 package example
 
+import com.amazonaws.services.lambda.runtime.events.SNSEvent
+
 import scala.collection.JavaConverters._
 
 object Main extends LambdaApp  {
 
-  def handler()  = {
+  def safeList[A](xs: java.util.List[A]) =
+    Option(xs).map(_.asScala).getOrElse(List.empty[A])
 
-    println("Hello Cloudwatch")
+  def handler(e: SNSEvent)  = {
 
-    List("Hello Lambda").toSeq.asJava
+    val rs = for {
+      r <- safeList(e.getRecords)
+    } yield {
+      r.getSNS.getMessage
+    }
+    rs.asJava
   }
 }
