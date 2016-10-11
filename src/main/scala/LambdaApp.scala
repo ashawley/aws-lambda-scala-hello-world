@@ -12,6 +12,8 @@ trait LambdaApp {
    */
   def handler(): java.util.List[String]
 
+  def cleanUp() = {}
+
   /***
    * Driver for testing handler locally
    */ 
@@ -19,20 +21,27 @@ trait LambdaApp {
     val uuid = java.util.UUID.randomUUID
     val version = "$LATEST"
 
-    // val event = new S3Event(new java.util.ArrayList())
-
     println(s"START RequestId: $uuid Version: $version")
 
     val t0 = System.nanoTime
-    val result = handler()
-    val t1 = System.nanoTime
-    val duration = (t1 - t0) / 1e6
+    var result: java.util.List[String] = new java.util.ArrayList[String]()
+    try {
+      result = handler()
+    } finally {
+      cleanUp()
+      val t1 = System.nanoTime
+      val duration = (t1 - t0) / 1e6
 
-    val env = Runtime.getRuntime
-    val memorySize = env.totalMemory / 1024 / 1024
-    val memoryUsed = (env.totalMemory - env.freeMemory) / 1024 / 1024
+      val env = Runtime.getRuntime
+      val memorySize = env.totalMemory / 1024 / 1024
+      val memoryUsed = (env.totalMemory - env.freeMemory) / 1024 / 1024
 
-    println(s"END RequestId: $uuid  Duration: ${duration} ms  Memory Size: ${memorySize} MB  Max Memory Used: ${memoryUsed} MB")
+      println(s"""END RequestId: $uuid
+                 |  Duration: ${duration} ms
+                 |  Memory Size: ${memorySize} MB
+                 |  Max Memory Used: ${memoryUsed} MB""".stripMargin
+        .replaceAll("\n", ""))
+    }
 
     println("[")
     println("  " + result.asScala.map(escString(_)).mkString(",\n  "))
