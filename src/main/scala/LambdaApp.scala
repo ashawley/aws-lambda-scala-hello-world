@@ -1,5 +1,7 @@
 package example
 
+import com.amazonaws.services.lambda.runtime.events.SNSEvent
+
 import scala.collection.JavaConverters._
 
 /***
@@ -10,9 +12,70 @@ trait LambdaApp {
   /***
    * Handlers
    */
-  def handler(): java.util.List[String]
+  def handler(e: SNSEvent): java.util.List[String]
 
   def cleanUp() = {}
+
+  // {
+  //   "Records": [
+  //     {
+  //       "EventVersion": "1.0",
+  //       "EventSubscriptionArn": "arn:aws:sns:EXAMPLE",
+  //       "EventSource": "aws:sns",
+  //       "Sns": {
+  //         "SignatureVersion": "1",
+  //         "Timestamp": "1970-01-01T00:00:00.000Z",
+  //         "Signature": "EXAMPLE",
+  //         "SigningCertUrl": "EXAMPLE",
+  //         "MessageId": "95df01b4-ee98-5cb9-9903-4c221d41eb5e",
+  //         "Message": "Hello from SNS!",
+  //         "MessageAttributes": {
+  //           "Test": {
+  //             "Type": "String",
+  //             "Value": "TestString"
+  //           },
+  //           "TestBinary": {
+  //             "Type": "Binary",
+  //             "Value": "TestBinary"
+  //           }
+  //         },
+  //         "Type": "Notification",
+  //         "UnsubscribeUrl": "EXAMPLE",
+  //         "TopicArn": "arn:aws:sns:EXAMPLE",
+  //         "Subject": "TestInvoke"
+  //       }
+  //     }
+  //   ]
+  // }
+  val snsEvent = {
+    val m0 = new SNSEvent.MessageAttribute
+    val m1 = new SNSEvent.MessageAttribute
+    m0.setType("String")
+    m0.setValue("TestString")
+    m1.setType("Binary")
+    m1.setValue("TestBinary")
+    val s = new SNSEvent.SNS
+    s.setSignatureVersion("1")
+    s.setTimestamp(new org.joda.time.DateTime("1970-01-01T00:00:00.000Z"))
+    s.setSignature("EXAMPLE")
+    s.setSigningCertUrl("EXAMPLE")
+    s.setMessageId("95df01b4-ee98-5cb9-9903-4c221d41eb5e")
+    s.setMessage("Hello from SNS!")
+    s.setMessageAttributes(
+      Map("Test" -> m0, "TestBinary" ->m1).asJava)
+    s.setType("Notification")
+    s.setUnsubscribeUrl("EXAMPLE")
+    s.setTopicArn("arn:aws:sns:EXAMPLE")
+    s.setSubject("TestInvoke")
+    val r = new SNSEvent.SNSRecord
+    r.setEventVersion("1.0")
+    r.setEventSubscriptionArn("arn:aws:sns:EXAMPLE")
+    r.setEventSource("aws:sns")
+    r.setSns(s)
+    val e = new SNSEvent
+    e.setRecords(List(r).asJava)
+    e
+  }
 
   /***
    * Driver for testing handler locally
@@ -26,7 +89,7 @@ trait LambdaApp {
     val t0 = System.nanoTime
     var result: java.util.List[String] = new java.util.ArrayList[String]()
     try {
-      result = handler()
+      result = handler(snsEvent)
     } catch {
       case e: Throwable => e.printStackTrace
     } finally {

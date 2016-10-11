@@ -1,6 +1,7 @@
-## AWS Lambda Scala Hello World
+## AWS Lambda and SNS notifications with Scala
 
-The smallest example of using Scala with AWS Lambda.
+The smallest example of using Scala with AWS Lambda and Simple
+Notification Service (SNS)
 
 Create a build.sbt with the following:
 
@@ -8,25 +9,33 @@ Create a build.sbt with the following:
 scalaVersion  := "2.12.0-RC1"
 
 libraryDependencies ++= Seq(
-  "com.amazonaws" % "aws-lambda-java-core" % "1.1.0"
+  "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
+  "com.amazonaws" % "aws-lambda-java-events" % "1.3.0"
 )
 ```
 
-Create source file, `Main.scala`, that writes to standard out, and
-returns a result.
+Create source file, `Main.scala`, that processes an `SNSEvent`, and
+returns a list.
 
 ```scala
 package example
 
+import com.amazonaws.services.lambda.runtime.events.SNSEvent
+
 import scala.collection.JavaConverters._
+
+import com.amazonaws.services.lambda.runtime.events.SNSEvent
 
 object Main extends LambdaApp  {
 
-  def handler()  = {
+  def handler(e: SNSEvent)  = {
 
-    println("Hello Cloudwatch")
-
-    List("Hello Lambda").toSeq.asJava
+    val rs = for {
+      r <- safeList(e.getRecords)
+    } yield {
+      r.getSNS.getMessage
+    }
+    rs.asJava
   }
 }
 ```
@@ -37,13 +46,13 @@ Lambda functions.  It can also help with testing the function locally.
 ```
 > run
 [info] Running example.Main
-START RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238 Version: $LATEST
-Hello Cloudwatch
-END RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238
-REPORT RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238  Duration: 133.473084 ms  Memory Size: 119 MB  Max Memory Used: 23 MB
+START RequestId: bf128863-6af3-498a-8e6c-9ac7ad285740 Version: $LATEST
+END RequestId: bf128863-6af3-498a-8e6c-9ac7ad285740
+REPORT RequestId: bf128863-6af3-498a-8e6c-9ac7ad285740 Duration: 2.048983 ms  Memory Size: 2042 MB  Max Memory Used: 715 MB
 [
-  "Hello Lambda"
+  "Hello from SNS!"
 ]
+[success] Total time: 4 s, completed Oct 12, 2016 10:06:12 AM
 ```
 
 To run on AWS, run the task provided by
@@ -51,32 +60,32 @@ To run on AWS, run the task provided by
 
 ```
 > assembly
-[info] Including from cache: ion-java-1.0.1.jar
-[info] Including from cache: aws-java-sdk-core-1.11.40.jar
-[info] Including from cache: httpclient-4.5.2.jar
-[info] Including from cache: commons-logging-1.1.3.jar
-[info] Including from cache: httpcore-4.4.4.jar
-[info] Including from cache: commons-codec-1.9.jar
-[info] Including from cache: aws-lambda-java-events-1.0.0.jar
+[info] Including from cache: aws-java-sdk-sns-1.11.0.jar
+[info] Including from cache: aws-java-sdk-cognitoidentity-1.11.0.jar
+[info] Including from cache: jackson-databind-2.5.3.jar
+[info] Including from cache: aws-java-sdk-sqs-1.11.0.jar
+[info] Including from cache: aws-java-sdk-kinesis-1.11.0.jar
+[info] Including from cache: jackson-annotations-2.5.0.jar
+[info] Including from cache: jackson-core-2.5.3.jar
+[info] Including from cache: jackson-dataformat-cbor-2.5.3.jar
+[info] Including from cache: aws-java-sdk-dynamodb-1.11.0.jar
+[info] Including from cache: aws-lambda-java-events-1.3.0.jar
 [info] Including from cache: joda-time-2.8.1.jar
-[info] Including from cache: jmespath-java-1.0.jar
-[info] Including from cache: aws-java-sdk-s3-1.11.40.jar
-[info] Including from cache: jackson-databind-2.6.6.jar
-[info] Including from cache: jackson-annotations-2.6.0.jar
-[info] Including from cache: aws-java-sdk-sns-1.11.40.jar
-[info] Including from cache: aws-java-sdk-kms-1.11.40.jar
-[info] Including from cache: jackson-core-2.6.6.jar
-[info] Including from cache: aws-lambda-java-core-1.0.0.jar
-[info] Including from cache: jackson-dataformat-cbor-2.6.6.jar
-[info] Including from cache: aws-java-sdk-sqs-1.11.40.jar
+[info] Including from cache: aws-lambda-java-core-1.1.0.jar
+[info] Including from cache: aws-java-sdk-s3-1.11.0.jar
+[info] Including from cache: aws-java-sdk-kms-1.11.0.jar
+[info] Including from cache: httpcore-4.4.4.jar
+[info] Including from cache: httpclient-4.5.2.jar
+[info] Including from cache: aws-java-sdk-core-1.11.0.jar
+[info] Including from cache: commons-logging-1.1.3.jar
+[info] Including from cache: commons-codec-1.9.jar
 [info] Including from cache: scala-library-2.12.0-RC1.jar
-[info] Including from cache: aws-java-sdk-cognitoidentity-1.11.40.jar
-[info] Including from cache: aws-java-sdk-kinesis-1.11.40.jar
 [info] Checking every *.class/*.jar file's SHA-1.
 [info] Merging files...
-[info] SHA-1: 169142dab8b01e507e8e312a95b335a21cae9c8f
+[info] SHA-1: 502aa723ff628dd6568883c13ec47cdaf93a4b71
 [info] Packaging target/scala-2.12.0-RC1/scala-hello-world-assembly-0.1-SNAPSHOT.jar ...
 [info] Done packaging.
+[success] Total time: 40 s, completed Oct 12, 2016 10:08:24 AM
 ```
 
 ### Uploading to AWS Lambda
@@ -107,8 +116,13 @@ To run on AWS, run the task provided by
 
 1. Click "Create function"
 
-1. Click "Test"
+1. Click "Actions" and then "Configure test event"
+
+1. From the "Sample event template" drop-down, choose "SNS"
+
+1. Click "Save and Test"
 
 ### References
 
 - https://aws.amazon.com/blogs/compute/writing-aws-lambda-functions-in-scala/
+- https://aws.amazon.com/blogs/compute/dynamic-github-actions-with-aws-lambda/
