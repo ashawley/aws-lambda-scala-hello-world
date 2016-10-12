@@ -36,9 +36,14 @@ Lambda functions.  It can also help with testing the function locally.
 
 ```
 > run
-[info] Running com.middil.Main 
+[info] Running example.Main
+START RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238 Version: $LATEST
 Hello Cloudwatch
-Hello Lambda
+END RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238
+REPORT RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238  Duration: 133.473084 ms  Memory Size: 119 MB  Max Memory Used: 23 MB
+[
+  "Hello Lambda"
+]
 ```
 
 To run on AWS, run the task provided by
