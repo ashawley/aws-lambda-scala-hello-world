@@ -1,6 +1,11 @@
 package example
 
+import codecheck.github.events.GitHubEvent
+
 import com.amazonaws.services.lambda.runtime.events.SNSEvent
+
+import org.json4s._
+import org.json4s.native.JsonMethods._
 
 import scala.collection.JavaConverters._
 
@@ -13,9 +18,12 @@ object Main extends LambdaApp  {
 
     val rs = for {
       r <- safeList(e.getRecords)
+      (key, attribute) <- r.getSNS.getMessageAttributes.asScala
+      if key == "X-GitHub-Event"
     } yield {
-      r.getSNS.getMessage
+      GitHubEvent(attribute.getValue, parse(r.getSNS.getMessage))
     }
-    rs.asJava
+
+    rs.map(_.name).asJava
   }
 }
