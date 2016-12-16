@@ -77,10 +77,11 @@ file.
 - Specify the name of the Git repository and the Git branch you want to
 update with auto-merged PRs in the `application.conf` file.
 
-- Add the public key to the repository in GitHub as a deploy key with
-*write access*
+- Add the public key to ~~the repository~~ your user account in GitHub
+as ~~a deploy~~ an SSH key ~~with *write access*~~
 
- - Visit http://github.com/my/repo/settings/keys
+ - Visit ~~http://github.com/my/repo/settings/keys~~
+https://github.com/settings/ssh
 
 - Create a GitHub access token in your user settings at
 
@@ -451,14 +452,15 @@ Lambda service
 Should the merge complete successfully, the application does a forced
 push to a branch of a remote Git repo.  The branch is the one that is
 configured in `application.conf`.  A forced push could result in data
-loss.  The SSH deploy key added to GitHub should only have access to
-the repo it was configured for.  However, by the nature of private
-repos in GitHub, a deploy key added to a root repo in GitHub will
-provide access for the deploy key to forked repos.  This is advantageous
-since the program requires read-access to forks.  Public repos provide
-read-access, by default, without a deploy key.  Since this program
-requires write-access to the repo configured in `application.conf`,
-the deploy key will have write-access to forked private repos.
+loss.  The SSH ~~deploy~~ user key added to GitHub will have access to
+all the repos the user is configured for.  However, by the nature of
+private repos in GitHub, write access to a root repo in GitHub will
+provide the same access to forked repos.  This is advantageous since
+the program requires read-access to forks.  Public repos provide
+read-access, by default, ~~without a deploy key~~ for any GitHub user.
+Since this program requires write-access to the repo configured in
+`application.conf`, the ~~deploy~~ user key will have write-access to
+~~forked private ~~ all repos that user has access to.
 
  The code will verify that the Git repo specified in
 `application.conf`, including the branch to monitor for pull requests.
