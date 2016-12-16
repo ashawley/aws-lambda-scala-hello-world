@@ -51,6 +51,9 @@ object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
     branch = config.require[String]("git.base")
   )
 
+  val gitUser = config.require[String]("git.user.name")
+  val gitEmail = config.require[String]("git.user.email")
+
   lazy val sshKey = scala.io.Source.fromInputStream(
     getClass.
       getClassLoader.
