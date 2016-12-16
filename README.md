@@ -415,7 +415,7 @@ Lambda service
 
 - Leave **Policy templates** blank
 
-- Reduce the memory to **256 MB**, and leave the timeout at *815 seconds**
+- Reduce the memory to **384 MB**, and leave the timeout at *815 seconds**
 
 - Keep the setting for **VPC** to none
 
