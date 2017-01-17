@@ -1,5 +1,9 @@
 scalaVersion  := "2.11.8"
 
+name := "aws-gh-prs"
+
+version := "0.1-SNAPSHOT"
+
 libraryDependencies ++= Seq(
   "io.verizon.knobs" %% "typesafe" % "3.12.27a",
   "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
@@ -19,3 +23,10 @@ mergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
+
+lazy val root = (project in file(".")).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := "prs"
+  )
