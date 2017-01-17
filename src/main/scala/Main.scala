@@ -108,6 +108,9 @@ object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
 
   def handler(e: SNSEvent)  = {
 
+    // Provided by sbt-buildinfo plugin
+    logger.info(s"Starting ${BuildInfo.name} ${BuildInfo.version}")
+
     logger.info("Inspecting SNS notification...")
     val events = for {
       r <- safeList(e.getRecords)
