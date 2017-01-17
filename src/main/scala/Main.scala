@@ -123,7 +123,7 @@ object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
     logger.info(s"Processed ${events.size} event(s)")
 
     val pullRequests = events.collect {
-      case e: PullRequestEvent if e.pull_request.state != "closed" =>
+      case e: PullRequestEvent =>
         GitPullRequest(
           GitBranch(
             e.pull_request.base.repo.owner.login,
