@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   "com.ning" % "async-http-client" % "1.9.21",
   "io.code-check" %% "github-api" % "0.2.0-SNAPSHOT",
   "org.json4s"    %% "json4s-native" % "3.5.0",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.5.0.201609210915-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.6.0.201612231935-r",
   // "com.jcraft" % "jsch" % "0.1.53",
   "com.typesafe.scala-logging" %% "scala-logging-slf4j" % "2.1.2",
   // "org.slf4j" % "slf4j-log4j12" % "1.7.22",
