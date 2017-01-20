@@ -28,6 +28,7 @@ trait LambdaApp {
       |    "state": "open",
       |    "head": {
       |      "ref": "changes",
+      |      "sha": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
       |      "repo": {
       |        "name": "public-repo",
       |        "owner": {

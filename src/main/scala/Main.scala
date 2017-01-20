@@ -134,7 +134,8 @@ object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
             e.pull_request.head.repo.owner.login,
             e.pull_request.head.repo.name,
             e.pull_request.head.ref
-          )
+          ),
+          e.pull_request.head.sha
         )
     }
 

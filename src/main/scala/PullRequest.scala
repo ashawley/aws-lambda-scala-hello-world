@@ -2,7 +2,8 @@ package prs
 
 case class GitPullRequest(
   base: GitBranch,
-  head: GitBranch
+  head: GitBranch,
+  sha: String
 )
 
 case class GitBranch(
