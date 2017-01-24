@@ -115,7 +115,7 @@ object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
     val events = for {
       r <- safeList(e.getRecords)
       (key, attribute) <- r.getSNS.getMessageAttributes.asScala
-      if key == "X-GitHub-Event" && attribute.getValue == "pull_request"
+      if key == "X-Github-Event" && attribute.getValue == "pull_request"
     } yield {
       GitHubEvent("pull_request", parse(r.getSNS.getMessage))
     }

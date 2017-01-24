@@ -87,7 +87,7 @@ trait LambdaApp {
     s.setMessageId("95df01b4-ee98-5cb9-9903-4c221d41eb5e")
     s.setMessage(pullRequestEvent)
     s.setMessageAttributes(
-      Map("X-GitHub-Event" -> m).asJava)
+      Map("X-Github-Event" -> m).asJava)
     s.setType("Notification")
     s.setUnsubscribeUrl("EXAMPLE")
     s.setTopicArn("arn:aws:sns:EXAMPLE")
