@@ -1,5 +1,16 @@
 [AWS console]: http://console.aws.amazon.com
+[JGit]: https://eclipse.org/jgit/
+[JSch]: http://www.jcraft.com/jsch/
+[github-api]: https://github.com/code-check/github-api-scala
+[Async HTTP Client]: https://github.com/AsyncHttpClient/async-http-client
+[json4s]: http://json4s.org/
+[AWS Lambda Java libraries]: https://github.com/aws/aws-lambda-java-libs
 [SBT Assembly]: http://github.com/sbt/sbt-assembly
+[SBT]: http://scala-sbt.org
+[SLF4J]: https://www.slf4j.org/
+[Typesafe Scala Logging]: https://github.com/typesafehub/scalalogging
+[list the hooks]: https://developer.github.com/v3/repos/hooks/#list-hooks
+[edit the hook]: https://developer.github.com/v3/repos/hooks/#edit-a-hook
 
 ## Merging pull requests on AWS Lambda with GitHub-SNS notifications
 
@@ -10,22 +21,22 @@ Lambda to automatically integrate pull requests for a project.
 
 A Scala program that is tightly coupled to the following libraries:
 
-- The Java library, JGit, by Eclipse can clone Git repositories,
+- The Java library, [JGit], by Eclipse can clone Git repositories,
 checkout branches, merge them and push them.
-- The Java library, JSch, from JCraft provides SSH support for JGit
+- The Java library, [JSch], from JCraft provides SSH support for JGit
 including support for user and host key verification.
-- Use of the GitHub API is with a Scala library, github-api, by SHUNJI
+- Use of the GitHub API is with a Scala library, [github-api], by SHUNJI
 Konishi of Codecheck.
-- Connect to GitHub's API over HTTP with a Java library, Async HTTP
-Client, by Ning.
-- JSON serialization with the Scala library, json4s, by Ivan Porto
+- Connect to GitHub's API over HTTP with a Java library, [Async HTTP
+Client], by Ning.
+- JSON serialization with the Scala library, [json4s], by Ivan Porto
 Carrero and KAZUHIRO Sera.
-- The AWS Lambda Java libraries by Amazon AWS provide the ability to run
-the JAR in their *serverless* Java 8 runtime.
-- JAR produced using the SBT plugin, SBT Assembly, by Eugene Yokota.
+- The [AWS Lambda Java libraries] by Amazon AWS provide the ability to
+run the JAR in their *serverless* Java 8 runtime.
+- JAR produced using the SBT plugin, [SBT Assembly], by Eugene Yokota.
 - JVM file system housekeeping provided by the sbt.io Scala library,
-from SBT team at Lightbend, Inc.
-- Logging provided by SLF4J of QoS.ch and Typesafe Scala Logging by
+from [SBT] team at Lightbend, Inc.
+- Logging provided by [SLF4J] of QoS.ch and Typesafe Scala Logging by
 Lightbend, Inc.
 
 Steps in detail:
@@ -446,6 +457,67 @@ Lambda service
       }
     }
 ```
+
+### Trigger SNS events on pull requests
+
+By default, GitHub sets the default notifications for webhooks,
+including for SNS, to just Git `push` events.  For SNS to receive
+pull request notifications from GitHub, you need to enable them.
+Currently, enabling them is only available from GitHub's API.  The
+event types are not configurable through the GitHub web site.
+
+The following Curl request will [list the hooks] for your repository
+so you can retrieve the **hook id** for your SNS notification.
+`GitHub token` is the access token you generated earlier, `OWNER` is
+your GitHub  organization name and `REPO` is your repository name.
+
+````
+$ curl -s -H 'Authorization: token [GitHub token]' https://api.github.com/repos/OWNER/REPO/hooks \
+  | grep -e id -e name
+  "id": 111333555,
+  "name": "amazonsns"
+````
+
+To enable the `pull_request` event, [edit the hook] for the id that
+you found above by running the following Curl request.  `GitHub token`
+is the access token you generated earlier, `OWNER` is your
+GitHub organization name and `REPO` is your repository name.
+
+```
+$ curl -s -X PATCH -H 'Authorization: token [GitHub token]' -d
+> '{
+>   "add_events": [
+>     "pull_request"
+>   ]
+> }' https://api.github.com/repos/OWNER/REPO/hooks/111333555
+{
+  "type": "Repository",
+  "id": 111333555,
+  "name": "amazonsns",
+  "active": true,
+  "events": [
+    "push",
+    "pull_request"
+  ],
+  "config": {
+    "aws_key": "AKIAJIXVE4UMUWJMCHOQ",
+    "aws_secret": "********",
+    "sns_region": "us-east-1",
+    "sns_topic": "arn:aws:sns:us-east-1:087683607067:GitHub-My-Repo-Testing"
+  },
+  "updated_at": "2016-12-13T21:56:47Z",
+  "created_at": "2016-12-13T20:39:12Z",
+  "url": "https://api.github.com/repos/OWNER/REPO-rails/hooks/111333555",
+  "test_url": "https://api.github.com/repos/OWNER/REPO/hooks/111333555/test",
+  "ping_url": "https://api.github.com/repos/OWNER/REPO/hooks/111333555/pings",
+  "last_response": {
+    "code": 200,
+    "status": "active",
+    "message": "OK"
+  }
+}
+```
+
 ### Warranty
 
 **Buyer beware**: This application will overwrite Git branches.
@@ -502,6 +574,7 @@ error message, include
 
 ### References
 
+- https://developer.github.com/webhooks/
 - http://aws.amazon.com/blogs/compute/writing-aws-lambda-functions-in-scala/
 - http://aws.amazon.com/blogs/compute/dynamic-github-actions-with-aws-lambda/
 - http://eclipse.org/jgit/
