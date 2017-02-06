@@ -5,7 +5,7 @@ import com.jcraft.jsch
 
 class JSchLogger(levelEnabled: Int) extends jsch.Logger {
 
-  lazy val logger = scalalogging.slf4j.Logger(
+  lazy val logger = scalalogging.Logger(
     org.slf4j.LoggerFactory.getLogger(classOf[jsch.JSch])
   )
 

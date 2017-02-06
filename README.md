@@ -134,56 +134,58 @@ Assembly], to build a JAR file.
 
 ```
 > assembly
-[info] Including: json4s-ext_2.11-3.4.2.jar
-[info] Including from cache: async-http-client-1.9.21.jar
-[info] Including from cache: aws-java-sdk-s3-1.11.0.jar
+[info] Including: json4s-native_2.11-3.5.0.jar
+[info] Including: log4j-1.2.17.jar
 [info] Including from cache: aws-java-sdk-kms-1.11.0.jar
-[info] Including from cache: netty-3.10.1.Final.jar
 [info] Including from cache: aws-java-sdk-core-1.11.0.jar
 [info] Including from cache: commons-logging-1.1.3.jar
-[info] Including: joda-time-2.9.4.jar
-[info] Including: github-api_2.11.jar
 [info] Including from cache: httpclient-4.5.2.jar
+[info] Including: json4s-core_2.11-3.5.0.jar
 [info] Including from cache: httpcore-4.4.4.jar
 [info] Including from cache: commons-codec-1.9.jar
 [info] Including from cache: jackson-dataformat-cbor-2.5.3.jar
 [info] Including from cache: aws-java-sdk-sns-1.11.0.jar
 [info] Including from cache: aws-java-sdk-sqs-1.11.0.jar
-[info] Including from cache: scala-library-2.11.8.jar
-[info] Including: typesafe_2.11-3.12.27a.jar
 [info] Including from cache: aws-java-sdk-cognitoidentity-1.11.0.jar
-[info] Including: core_2.11-3.12.27a.jar
 [info] Including from cache: aws-java-sdk-kinesis-1.11.0.jar
 [info] Including from cache: aws-java-sdk-dynamodb-1.11.0.jar
+[info] Including: aws-lambda-java-log4j-1.0.0.jar
 [info] Including: scodec-bits_2.11-1.0.12.jar
+[info] Including: scala-library-2.11.8.jar
+[info] Including: async-http-client-1.9.21.jar
 [info] Including: parser_2.11-0.3.3.jar
-[info] Including: json4s-jackson_2.11-3.4.2.jar
-[info] Including: json4s-core_2.11-3.4.2.jar
-[info] Including: scalaz-stream_2.11-0.8.1a.jar
-[info] Including: joda-convert-1.8.1.jar
-[info] Including from cache: logback-classic-1.1.3.jar
-[info] Including from cache: logback-core-1.1.3.jar
-[info] Including from cache: scopt_2.11-3.3.0.jar
-[info] Including from cache: json4s-native_2.11-3.4.0.jar
-[info] Including: json4s-ast_2.11-3.4.2.jar
-[info] Including from cache: org.eclipse.jgit-4.5.0.201609210915-r.jar
-[info] Including from cache: jsch-0.1.53.jar
-[info] Including: json4s-scalap_2.11-3.4.2.jar
-[info] Including from cache: JavaEWAH-0.7.9.jar
-[info] Including from cache: slf4j-nop-1.7.21.jar
-[info] Including from cache: slf4j-api-1.7.21.jar
-[info] Including: io_2.11-1.0.0-M7.jar
-[info] Including: config-1.2.1.jar
+[info] Including: json4s-ast_2.11-3.5.0.jar
+[info] Including: json4s-scalap_2.11-3.5.0.jar
+[info] Including: netty-3.10.1.Final.jar
+[info] Including: scala-xml_2.11-1.0.6.jar
 [info] Including: scalaz-core_2.11-7.2.7.jar
-[info] Including from cache: aws-lambda-java-core-1.1.0.jar
-[info] Including from cache: aws-lambda-java-events-1.3.0.jar
-[info] Including from cache: paranamer-2.8.jar
-[info] Including from cache: scala-xml_2.11-1.0.5.jar
+[info] Including: org.eclipse.jgit-4.6.0.201612231935-r.jar
+[info] Including: github-api_2.11.jar
+[info] Including: json4s-jackson_2.11-3.4.2.jar
+[info] Including: paranamer-2.8.jar
 [info] Including: jackson-databind-2.6.7.jar
+[info] Including: jackson-annotations-2.6.0.jar
+[info] Including: jsch-0.1.53.jar
+[info] Including: jackson-core-2.6.7.jar
+[info] Including: json4s-ext_2.11-3.4.2.jar
+[info] Including: JavaEWAH-1.1.6.jar
+[info] Including: scala-logging_2.11-3.5.0.jar
+[info] Including: joda-time-2.9.4.jar
+[info] Including: scala-reflect-2.11.8.jar
+[info] Including: joda-convert-1.8.1.jar
+[info] Including: typesafe_2.11-3.12.27a.jar
+[info] Including: core_2.11-3.12.27a.jar
+[info] Including: scopt_2.11-3.3.0.jar
+[info] Including: scalaz-stream_2.11-0.8.1a.jar
 [info] Including: scalaz-concurrent_2.11-7.2.2.jar
 [info] Including: scalaz-effect_2.11-7.2.2.jar
-[info] Including from cache: jackson-annotations-2.6.0.jar
-[info] Including: jackson-core-2.6.7.jar
+[info] Including: slf4j-log4j12-1.7.22.jar
+[info] Including: slf4j-api-1.7.22.jar
+[info] Including: config-1.2.1.jar
+[info] Including: io_2.11-1.0.0-M7.jar
+[info] Including from cache: aws-lambda-java-core-1.1.0.jar
+[info] Including from cache: aws-lambda-java-events-1.3.0.jar
+[info] Including from cache: aws-java-sdk-s3-1.11.0.jar
 [info] Checking every *.class/*.jar file's SHA-1.
 [info] Merging files...
 [warn] Merging 'META-INF/DEPENDENCIES' with strategy 'discard'
@@ -195,9 +197,7 @@ Assembly], to build a JAR file.
 [warn] Merging 'META-INF/LICENSE_commons-logging-1.1.3.txt' with strategy 'discard'
 [warn] Merging 'META-INF/LICENSE_httpclient-4.5.2' with strategy 'discard'
 [warn] Merging 'META-INF/LICENSE_httpcore-4.4.4' with strategy 'discard'
-[warn] Merging 'META-INF/LICENSE_jackson-annotations-2.6.0' with strategy 'discard'
 [warn] Merging 'META-INF/LICENSE_jackson-dataformat-cbor-2.5.3' with strategy 'discard'
-[warn] Merging 'META-INF/LICENSE_netty-3.10.1.Final.txt' with strategy 'discard'
 [warn] Merging 'META-INF/MANIFEST.MF' with strategy 'discard'
 [warn] Merging 'META-INF/NOTICE' with strategy 'discard'
 [warn] Merging 'META-INF/NOTICE.txt' with strategy 'discard'
@@ -205,22 +205,17 @@ Assembly], to build a JAR file.
 [warn] Merging 'META-INF/NOTICE_commons-logging-1.1.3.txt' with strategy 'discard'
 [warn] Merging 'META-INF/NOTICE_httpclient-4.5.2' with strategy 'discard'
 [warn] Merging 'META-INF/NOTICE_httpcore-4.4.4' with strategy 'discard'
-[warn] Merging 'META-INF/NOTICE_netty-3.10.1.Final.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.base64.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.bouncycastle.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.commons-logging.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.felix.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.jboss-logging.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.jsr166y.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.jzlib.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.log4j.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.protobuf.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.slf4j.txt' with strategy 'discard'
-[warn] Merging 'META-INF/license_netty-3.10.1.Final/LICENSE.webbit.txt' with strategy 'discard'
-[warn] Merging 'META-INF/maven/ch.qos.logback/logback-classic/pom.properties' with strategy 'discard'
-[warn] Merging 'META-INF/maven/ch.qos.logback/logback-classic/pom.xml' with strategy 'discard'
-[warn] Merging 'META-INF/maven/ch.qos.logback/logback-core/pom.properties' with strategy 'discard'
-[warn] Merging 'META-INF/maven/ch.qos.logback/logback-core/pom.xml' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.base64.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.bouncycastle.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.commons-logging.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.felix.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.jboss-logging.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.jsr166y.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.jzlib.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.log4j.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.protobuf.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.slf4j.txt' with strategy 'discard'
+[warn] Merging 'META-INF/license/LICENSE.webbit.txt' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-java-sdk-cognitoidentity/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-java-sdk-cognitoidentity/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-java-sdk-core/pom.properties' with strategy 'discard'
@@ -241,6 +236,8 @@ Assembly], to build a JAR file.
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-lambda-java-core/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-lambda-java-events/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.amazonaws/aws-lambda-java-events/pom.xml' with strategy 'discard'
+[warn] Merging 'META-INF/maven/com.amazonaws/aws-lambda-java-log4j/pom.properties' with strategy 'discard'
+[warn] Merging 'META-INF/maven/com.amazonaws/aws-lambda-java-log4j/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.fasterxml.jackson.core/jackson-annotations/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.fasterxml.jackson.core/jackson-annotations/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/com.fasterxml.jackson.core/jackson-core/pom.properties' with strategy 'discard'
@@ -265,6 +262,8 @@ Assembly], to build a JAR file.
 [warn] Merging 'META-INF/maven/io.netty/netty/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/joda-time/joda-time/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/joda-time/joda-time/pom.xml' with strategy 'discard'
+[warn] Merging 'META-INF/maven/log4j/log4j/pom.properties' with strategy 'discard'
+[warn] Merging 'META-INF/maven/log4j/log4j/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/org.apache.httpcomponents/httpclient/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/org.apache.httpcomponents/httpclient/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/org.apache.httpcomponents/httpcore/pom.properties' with strategy 'discard'
@@ -275,16 +274,12 @@ Assembly], to build a JAR file.
 [warn] Merging 'META-INF/maven/org.joda/joda-convert/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/maven/org.slf4j/slf4j-api/pom.properties' with strategy 'discard'
 [warn] Merging 'META-INF/maven/org.slf4j/slf4j-api/pom.xml' with strategy 'discard'
-[warn] Merging 'META-INF/maven/org.slf4j/slf4j-nop/pom.properties' with strategy 'discard'
-[warn] Merging 'META-INF/maven/org.slf4j/slf4j-nop/pom.xml' with strategy 'discard'
+[warn] Merging 'META-INF/maven/org.slf4j/slf4j-log4j12/pom.properties' with strategy 'discard'
+[warn] Merging 'META-INF/maven/org.slf4j/slf4j-log4j12/pom.xml' with strategy 'discard'
 [warn] Merging 'META-INF/services/com.fasterxml.jackson.core.JsonFactory' with strategy 'discard'
 [warn] Merging 'META-INF/services/com.fasterxml.jackson.core.ObjectCodec' with strategy 'discard'
-[warn] Merging 'org/slf4j/impl/StaticLoggerBinder.class' with strategy 'first'
-[warn] Merging 'org/slf4j/impl/StaticMDCBinder.class' with strategy 'first'
-[warn] Merging 'org/slf4j/impl/StaticMarkerBinder.class' with strategy 'first'
-[warn] Strategy 'discard' was applied to 93 files
-[warn] Strategy 'first' was applied to 3 files
-[info] SHA-1: 0dfd2a6c4c869f16d0dba605948c5755296742c0
+[warn] Strategy 'discard' was applied to 90 files
+[info] SHA-1: 0dc9a913e36533508638092d844ddb1dad1c8647
 [info] Packaging target/scala-2.11/aws-gh-prs-assembly-0.1-SNAPSHOT.jar ...
 [info] Done packaging.
 [success] Total time: 63 s, completed Dec 14, 2016 9:29:40 AM

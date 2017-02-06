@@ -31,7 +31,7 @@ import scala.concurrent.duration._
 
 import scala.collection.JavaConverters._
 
-object Main extends LambdaApp with scalalogging.slf4j.StrictLogging {
+object Main extends LambdaApp with scalalogging.StrictLogging {
 
   val config = Typesafe.config.unsafePerformSync
 
