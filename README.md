@@ -6,7 +6,7 @@ Notification Service (SNS)
 Create a build.sbt with the following:
 
 ```scala
-scalaVersion  := "2.12.0-RC1"
+scalaVersion  := "2.12.1"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
@@ -79,7 +79,7 @@ To run on AWS, run the task provided by
 [info] Including from cache: aws-java-sdk-core-1.11.0.jar
 [info] Including from cache: commons-logging-1.1.3.jar
 [info] Including from cache: commons-codec-1.9.jar
-[info] Including from cache: scala-library-2.12.0-RC1.jar
+[info] Including from cache: scala-library-2.12.1.jar
 [info] Checking every *.class/*.jar file's SHA-1.
 [info] Merging files...
 [info] SHA-1: 502aa723ff628dd6568883c13ec47cdaf93a4b71
