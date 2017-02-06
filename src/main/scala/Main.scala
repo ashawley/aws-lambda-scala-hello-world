@@ -2,11 +2,13 @@ package example
 
 import scala.collection.JavaConverters._
 
-object Main extends LambdaApp  {
+import com.typesafe.scalalogging
+
+object Main extends LambdaApp with scalalogging.StrictLogging {
 
   def handler()  = {
 
-    println("Hello Cloudwatch")
+    logger.info("Hello Cloudwatch")
 
     List("Hello Lambda").toSeq.asJava
   }

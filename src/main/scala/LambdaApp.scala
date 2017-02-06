@@ -20,6 +20,7 @@ trait LambdaApp {
   def main(args: Array[String]): Unit = {
     val uuid = java.util.UUID.randomUUID
     val version = "$LATEST"
+    org.apache.log4j.MDC.put("AWSRequestId", uuid.toString)
 
     println(s"START RequestId: $uuid Version: $version")
 

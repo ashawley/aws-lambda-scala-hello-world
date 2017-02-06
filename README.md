@@ -1,6 +1,6 @@
-## AWS Lambda Scala Hello World
+## AWS Lambda Scala Hello World with Logging
 
-The smallest example of using Scala with AWS Lambda.
+The smallest example of using Scala on AWS Lambda with logging.
 
 Create a build.sbt with the following:
 
@@ -8,7 +8,10 @@ Create a build.sbt with the following:
 scalaVersion  := "2.12.1"
 
 libraryDependencies ++= Seq(
-  "com.amazonaws" % "aws-lambda-java-core" % "1.1.0"
+  "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
+  "com.amazonaws" % "aws-lambda-java-log4j" % "1.0.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
+  "org.slf4j" % "slf4j-log4j12" % "1.7.22"
 )
 ```
 
@@ -20,11 +23,13 @@ package example
 
 import scala.collection.JavaConverters._
 
-object Main extends LambdaApp  {
+import com.typesafe.scalalogging
+
+object Main extends LambdaApp with scalalogging.StrictLogging {
 
   def handler()  = {
 
-    println("Hello Cloudwatch")
+    logger.info("Hello Cloudwatch")
 
     List("Hello Lambda").toSeq.asJava
   }
@@ -38,7 +43,7 @@ Lambda functions.  It can also help with testing the function locally.
 > run
 [info] Running example.Main
 START RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238 Version: $LATEST
-Hello Cloudwatch
+15:53:35.958 82c9bda8-a14e-4436-8805-f6a15f2aa238 [run-main-0] INFO  example.Main$:11 - Hello Cloudwatch
 END RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238
 REPORT RequestId: 82c9bda8-a14e-4436-8805-f6a15f2aa238  Duration: 133.473084 ms  Memory Size: 119 MB  Max Memory Used: 23 MB
 [
@@ -51,7 +56,13 @@ To run on AWS, run the task provided by
 
 ```
 > assembly
+[info] Including: aws-lambda-java-log4j-1.0.0.jar
+[info] Including: scala-logging_2.12-3.5.0.jar
+[info] Including: slf4j-log4j12-1.7.22.jar
+[info] Including: slf4j-api-1.7.22.jar
+[info] Including: log4j-1.2.17.jar
 [info] Including: aws-lambda-java-core-1.1.0.jar
+[info] Including: scala-reflect-2.12.1.jar
 [info] Including: scala-library-2.12.1.jar
 [info] Checking every *.class/*.jar file's SHA-1.
 [info] Merging files...
@@ -93,3 +104,4 @@ To run on AWS, run the task provided by
 ### References
 
 - https://aws.amazon.com/blogs/compute/writing-aws-lambda-functions-in-scala/
+- http://docs.aws.amazon.com/lambda/latest/dg/java-logging.html
