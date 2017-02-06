@@ -5,7 +5,7 @@ The smallest example of using Scala with AWS Lambda.
 Create a build.sbt with the following:
 
 ```scala
-scalaVersion  := "2.12.0-RC1"
+scalaVersion  := "2.12.1"
 
 libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-lambda-java-core" % "1.1.0"
@@ -51,31 +51,12 @@ To run on AWS, run the task provided by
 
 ```
 > assembly
-[info] Including from cache: ion-java-1.0.1.jar
-[info] Including from cache: aws-java-sdk-core-1.11.40.jar
-[info] Including from cache: httpclient-4.5.2.jar
-[info] Including from cache: commons-logging-1.1.3.jar
-[info] Including from cache: httpcore-4.4.4.jar
-[info] Including from cache: commons-codec-1.9.jar
-[info] Including from cache: aws-lambda-java-events-1.0.0.jar
-[info] Including from cache: joda-time-2.8.1.jar
-[info] Including from cache: jmespath-java-1.0.jar
-[info] Including from cache: aws-java-sdk-s3-1.11.40.jar
-[info] Including from cache: jackson-databind-2.6.6.jar
-[info] Including from cache: jackson-annotations-2.6.0.jar
-[info] Including from cache: aws-java-sdk-sns-1.11.40.jar
-[info] Including from cache: aws-java-sdk-kms-1.11.40.jar
-[info] Including from cache: jackson-core-2.6.6.jar
-[info] Including from cache: aws-lambda-java-core-1.0.0.jar
-[info] Including from cache: jackson-dataformat-cbor-2.6.6.jar
-[info] Including from cache: aws-java-sdk-sqs-1.11.40.jar
-[info] Including from cache: scala-library-2.12.0-RC1.jar
-[info] Including from cache: aws-java-sdk-cognitoidentity-1.11.40.jar
-[info] Including from cache: aws-java-sdk-kinesis-1.11.40.jar
+[info] Including: aws-lambda-java-core-1.1.0.jar
+[info] Including: scala-library-2.12.1.jar
 [info] Checking every *.class/*.jar file's SHA-1.
 [info] Merging files...
 [info] SHA-1: 169142dab8b01e507e8e312a95b335a21cae9c8f
-[info] Packaging target/scala-2.12.0-RC1/scala-hello-world-assembly-0.1-SNAPSHOT.jar ...
+[info] Packaging target/scala-2.12.1/aws-lambda-scala-hello-world-assembly-0.1-SNAPSHOT.jar ...
 [info] Done packaging.
 ```
 
