@@ -2,6 +2,12 @@
 
 The smallest example of using Scala with AWS Lambda.
 
+For other examples of using AWS Lambda, see the following branches:
+
+- [logging](http://github.com/ashawley/aws-lambda-scala-hello-world/tree/logging)
+- [sns](http://github.com/ashawley/aws-lambda-scala-hello-world/tree/sns)
+- [github-sns](http://github.com/ashawley/aws-lambda-scala-hello-world/tree/github-sns)
+
 Create a build.sbt with the following:
 
 ```scala
