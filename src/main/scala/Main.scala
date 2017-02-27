@@ -8,11 +8,7 @@ import org.eclipse.jgit
 
 import com.jcraft.jsch
 
-import codecheck.github.api.GitHubAPI
-import codecheck.github.events.GitHubEvent
-import codecheck.github.events.PullRequestEvent
-import codecheck.github.models.PullRequestListOption
-import codecheck.github.transport.asynchttp19.AsyncHttp19Transport
+import codecheck.github
 
 import com.ning.http.client.AsyncHttpClient
 
@@ -20,11 +16,6 @@ import com.amazonaws.services.lambda.runtime.events.SNSEvent
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
-
-import sbt.io.IO
-import sbt.io.Path
-
-import scala.io.Source
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -71,8 +62,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
   val githubToken = config.require[String]("github.token")
 
-  val client = new AsyncHttp19Transport(new AsyncHttpClient())
-  val github = new GitHubAPI(githubToken, client)
+  val client = new github.transport.asynchttp19.AsyncHttp19Transport(new AsyncHttpClient())
+  val githubApi = new github.api.GitHubAPI(githubToken, client)
 
   val sshSessionFactory = new jgit.transport.JschConfigSessionFactory {
 
@@ -117,13 +108,13 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       (key, attribute) <- r.getSNS.getMessageAttributes.asScala
       if key == "X-Github-Event" && attribute.getValue == "pull_request"
     } yield {
-      GitHubEvent("pull_request", parse(r.getSNS.getMessage))
+      github.events.GitHubEvent("pull_request", parse(r.getSNS.getMessage))
     }
 
     logger.info(s"Processed ${events.size} event(s)")
 
     val pullRequests = events.collect {
-      case e: PullRequestEvent =>
+      case e: github.events.PullRequestEvent =>
         GitPullRequest(
           GitBranch(
             e.pull_request.base.repo.owner.login,
@@ -158,10 +149,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
   def pullRequestsFor(pr: GitPullRequest) = {
     logger.info(s"Querying GitHub for open pull requests...")
-    val listFilter = PullRequestListOption(base = Some(pr.base.branch))
+    val listFilter = github.models.PullRequestListOption(base = Some(pr.base.branch))
     val pullRequests =
       Await.result(
-        github.listPullRequests(repoConfig.owner, repoConfig.repo, listFilter),
+        githubApi.listPullRequests(repoConfig.owner, repoConfig.repo, listFilter),
         Duration.Inf
       )
     val branchesToMerge = for {
