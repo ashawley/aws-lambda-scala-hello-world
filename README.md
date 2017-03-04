@@ -49,16 +49,18 @@ Steps in detail:
 - Load config file from `application.conf`
 - Verify repo in SNS is same repo in config file
 - Find name of base branch in config file to merge on to
-- Find all pull requests in the repo for the base branch
 - Use GitHub token in config file to call GitHub API
+- Find all pull requests in the repo for the base branch
+- Set HEAD commit to all pull requests to pending
 - Checkout base branch with Git and SSH
 - Use SSH keys and known_hosts specified in config file
 - Use SSH keys and known_hosts included in JAR file
 - Create integration branch specified in config file with Git
 - Merge pull requests on to integration branch with Git
 - Force push to GitHub using Git and SSH
-- If merge succeeds, return list of merged branches
-- If merge fails, don't push, and notify failure in SNS
+- If merge succeeds, merged branches
+- If merge fails, don't push, and return unmergable branch
+- Notify success or failure with GitHub status API
 
 ### Testing locally
 
@@ -531,7 +533,7 @@ the program requires read-access to forks.  Public repos provide
 read-access, by default, ~~without a deploy key~~ for any GitHub user.
 Since this program requires write-access to the repo configured in
 `application.conf`, the ~~deploy~~ user key will have write-access to
-~~forked private ~~ all repos that user has access to.
+~~forks of private~~ all repos that user has access to.
 
  The code will verify that the Git repo specified in
 `application.conf`, including the branch to monitor for pull requests.
