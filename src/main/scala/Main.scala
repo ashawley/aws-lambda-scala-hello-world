@@ -39,7 +39,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
   val repoConfig = GitBranch(
     owner  = config.require[String]("git.owner"),
     repo   = config.require[String]("git.repo"),
-    branch = config.require[String]("git.base")
+    branch = config.require[String]("git.base"),
+    sha = "HEAD" // Dummy value
   )
 
   val gitUser = config.require[String]("git.user.name")
@@ -119,12 +120,14 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           GitBranch(
             e.pull_request.base.repo.owner.login,
             e.pull_request.base.repo.name,
-            e.pull_request.base.ref
+            e.pull_request.base.ref,
+            "HEAD"
           ),
           GitBranch(
             e.pull_request.head.repo.owner.login,
             e.pull_request.head.repo.name,
-            e.pull_request.head.ref
+            e.pull_request.head.ref,
+            e.pull_request.head.sha
           ),
           e.pull_request.head.sha
         )
@@ -140,9 +143,31 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
     val merges = for {
       pr <- pullRequests if pr.base == repoConfig
-      merged <- doMerge(mergeFor(pr))
     } yield {
-      merged
+      val merge = mergeFor(pr)
+      try {
+        doMerge(merge)
+      } catch {
+        case e: Throwable => {
+
+          logger.info(s"Caught error ${e.getMessage}")
+
+          logger.info(s"Setting status on pull requests...")
+
+          for {
+            br <- merge.branches
+          } yield {
+            val status = github.models.StatusInput(
+              github.models.StatusState.error,
+              description = Some(e.getMessage),
+              context = Some("continuous-integration")
+            )
+            githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+          }
+
+          s"Failed to merge: ${e.getMessage}"
+        }
+      }
     }
     client.close
     merges.asJava
@@ -162,7 +187,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       GitBranch(
         pullRequest.head.repo.owner.login,
         pullRequest.head.repo.name,
-        pullRequest.head.ref
+        pullRequest.head.ref,
+        pullRequest.head.sha
       )
     }
 
@@ -179,13 +205,6 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     s"git@github.com:${br.owner}/${br.repo}.git"
 
   def doMerge(m: GitMerge) = {
-
-    val remoteBranches = for {
-      br <- m.branches
-      if br.owner == m.from.owner
-    } yield {
-      s"${br.owner}/${br.branch}"
-    }
 
     val upstream = gitURI(m.from)
 
@@ -222,6 +241,13 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       br <- m.branches.groupBy(_.repoFullName).values.map(_.head)
       if br.owner != m.from.owner
     } yield {
+
+      val status = github.models.StatusInput(
+        github.models.StatusState.pending,
+        description = Some("Continuously integrating..."),
+        context = Some("continuous-integration")
+      )
+      githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
 
       val repoURI = gitURI(br)
       val refSpec =
@@ -284,17 +310,67 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         .call()
     }
 
-    // FIXME: Don't push, if merge above failed
-    logger.info(s"Pushing $integrationBranch...")
+    if (merges.isEmpty) {
+      logger.info(s"Nothing to merge...")
+    }
 
-    val push = git.push()
-      .setForce(true)
-      .setRemote(m.from.owner)
-      .setRefSpecs(new jgit.transport.RefSpec(integrationBranch))
-      .setTransportConfigCallback(transportConfigCallback)
-      .call()
+    // See if merge above failed
+    merges.zip(m.branches).find {
+      case (mergeResult, _) => {
+        !mergeResult.getMergeStatus.isSuccessful
+      }
+    } match {
 
-    remoteBranches
+      // Don't push, but set to status to fail
+
+      case Some((mergeFailure, failBranch)) => {
+        logger.error(s"Merge failed so $integrationBranch will not be pushed...")
+        val desc = s"Failed to merge ${failBranch.label}: ${mergeFailure.getMergeStatus}"
+        logger.error(descr)
+        for {
+          br <- m.branches
+        } yield {
+          val status = github.models.StatusInput(
+            github.models.StatusState.failure,
+            description = Some(desc),
+            context = Some("continuous-integration")
+          )
+          logger.info(s"Setting status of ${br.label} to $desc")
+          githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+          
+        }
+        desc
+      }
+      case None => {
+    
+        // Push if merge above succeeded
+
+        logger.info(s"Pushing $integrationBranch...")
+
+        val push = git.push()
+          .setForce(true)
+          .setRemote(m.from.owner)
+          .setRefSpecs(new jgit.transport.RefSpec(integrationBranch))
+          .setTransportConfigCallback(transportConfigCallback)
+          .call()
+
+        for {
+          br <- m.branches
+        } yield {
+          val status = github.models.StatusInput(
+            github.models.StatusState.success,
+            description = Some("Continuous integration succeeded"),
+            context = Some("continuous-integration")
+          )
+          githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+        }
+
+        val branchNames = m.branches.map { br =>
+          s"'${br.owner}/${br.branch}'"
+        } mkString(", ")
+        s"Merged branch(es) $branchNames into $integrationBranch"
+      }
+    }
   }
 
   /**

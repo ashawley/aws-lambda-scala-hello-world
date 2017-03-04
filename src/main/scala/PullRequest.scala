@@ -9,7 +9,8 @@ case class GitPullRequest(
 case class GitBranch(
   owner: String,
   repo: String,
-  branch: String
+  branch: String,
+  sha: String
 ) {
   override def toString = s"$repoFullName:$branch"
   lazy val repoFullName = s"$owner/$repo"
