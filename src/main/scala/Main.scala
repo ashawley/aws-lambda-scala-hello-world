@@ -140,14 +140,14 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
     val merges = for {
       pr <- pullRequests if pr.base == repoConfig
-      merged <- mergePullRequest(pullRequestsFor(pr))
+      merged <- doMerge(mergeFor(pr))
     } yield {
       merged
     }
     merges.asJava
   }
 
-  def pullRequestsFor(pr: GitPullRequest) = {
+  def mergeFor(pr: GitPullRequest) = {
     logger.info(s"Querying GitHub for open pull requests...")
     val listFilter = github.models.PullRequestListOption(base = Some(pr.base.branch))
     val pullRequests =
@@ -174,16 +174,16 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     )
   }
 
-  def gitURI(b: GitBranch) =
-    s"git@github.com:${b.owner}/${b.repo}.git"
+  def gitURI(br: GitBranch) =
+    s"git@github.com:${br.owner}/${br.repo}.git"
 
-  def mergePullRequest(m: GitMerge) = {
+  def doMerge(m: GitMerge) = {
 
     val remoteBranches = for {
-      b <- m.branches
-      if b.owner == m.from.owner
+      br <- m.branches
+      if br.owner == m.from.owner
     } yield {
-      s"${b.owner}/${b.branch}"
+      s"${br.owner}/${br.branch}"
     }
 
     val upstream = gitURI(m.from)
@@ -218,17 +218,17 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     logger.info(s"Configuring remotes...")
 
     val remotes = for {
-      b <- m.branches.groupBy(_.repoFullName).values.map(_.head)
-      if b.owner != m.from.owner
+      br <- m.branches.groupBy(_.repoFullName).values.map(_.head)
+      if br.owner != m.from.owner
     } yield {
 
-      val repoURI = gitURI(b)
+      val repoURI = gitURI(br)
       val refSpec =
-        s"+refs/heads/*:refs/remotes/${b.owner}/*"
+        s"+refs/heads/*:refs/remotes/${br.owner}/*"
 
-      logger.info(s"Remote ${b.owner} at $repoURI")
+      logger.info(s"Remote ${br.owner} at $repoURI")
 
-      val remoteConfig = new jgit.transport.RemoteConfig(gitConfig, b.owner)
+      val remoteConfig = new jgit.transport.RemoteConfig(gitConfig, br.owner)
       remoteConfig.addURI(new jgit.transport.URIish(repoURI))
       remoteConfig.addFetchRefSpec(new jgit.transport.RefSpec(refSpec))
       remoteConfig.update(gitConfig)
@@ -240,17 +240,17 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     logger.info(s"Configured ${remotes.size} remote(s)")
 
     val fetches = for {
-      b <- m.branches
-      if b.owner != m.from.owner
+      br <- m.branches
+      if br.owner != m.from.owner
     } yield {
 
-      logger.info(s"Fetching ${b.label}...")
+      logger.info(s"Fetching ${br.label}...")
 
       val refSpec =
-        s"refs/heads/${b.branch}:refs/remotes/${b.owner}/${b.branch}"
+        s"refs/heads/${br.branch}:refs/remotes/${br.owner}/${br.branch}"
 
       git.fetch()
-        .setRemote(b.owner)
+        .setRemote(br.owner)
         .setRefSpecs(new jgit.transport.RefSpec(refSpec))
         .setCheckFetchedObjects(true)
         .setTransportConfigCallback(transportConfigCallback)
@@ -273,13 +273,13 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       .call()
 
     val merges = for {
-      b <- m.branches
+      br <- m.branches
     } yield {
 
-      logger.info(s"Merging ${b.remote}...")
+      logger.info(s"Merging ${br.remote}...")
 
       git.merge()
-        .include(repo.exactRef(s"refs/remotes/${b.remote}"))
+        .include(repo.exactRef(s"refs/remotes/${br.remote}"))
         .call()
     }
 
