@@ -144,6 +144,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     } yield {
       merged
     }
+    client.close
     merges.asJava
   }
 
