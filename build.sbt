@@ -20,8 +20,16 @@ libraryDependencies ++= Seq(
   // "com.jcraft" % "jsch" % "0.1.53",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "org.slf4j" % "slf4j-log4j12" % "1.7.22",
+  "org.slf4j" % "slf4j-nop" % "1.7.22" % "test", // See also [1] below
   "org.scala-sbt" %% "io" % "1.0.0-M7"
 )
+
+// 1. Favor slf4j-nop for Test over slf4j-log4j12 for Runtime
+(dependencyClasspath in Test) <<= (dependencyClasspath in Test) map {
+  _.filter {
+    _.get(moduleID.key) exists (_.name != "slf4j-log4j12")
+  }
+}
 
 mergeStrategy in assembly := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
