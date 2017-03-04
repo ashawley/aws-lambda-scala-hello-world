@@ -150,7 +150,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       } catch {
         case e: Throwable => {
 
-          logger.info(s"Caught error ${e.getMessage}")
+          logger.error(s"Caught error ${e.getMessage}")
 
           logger.info(s"Setting status on pull requests...")
 
@@ -326,7 +326,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       case Some((mergeFailure, failBranch)) => {
         logger.error(s"Merge failed so $integrationBranch will not be pushed...")
         val desc = s"Failed to merge ${failBranch.label}: ${mergeFailure.getMergeStatus}"
-        logger.error(descr)
+        logger.error(desc)
         for {
           br <- m.branches
         } yield {
