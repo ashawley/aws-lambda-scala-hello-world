@@ -175,7 +175,11 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
   def mergeFor(pr: GitPullRequest) = {
     logger.info(s"Querying GitHub for open pull requests...")
-    val listFilter = github.models.PullRequestListOption(base = Some(pr.base.branch))
+    val listFilter = github.models.PullRequestListOption(
+      base      = Some(pr.base.branch),
+      sort      = github.models.IssueSort.created,
+      direction = github.models.SortDirection.asc
+    )
     val pullRequests =
       Await.result(
         githubApi.listPullRequests(repoConfig.owner, repoConfig.repo, listFilter),
