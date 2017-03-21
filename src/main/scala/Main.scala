@@ -150,9 +150,9 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       } catch {
         case e: Throwable => {
 
-          logger.error(s"Caught error ${e.getMessage}")
+          logger.error(e.getMessage)
 
-          logger.info(s"Setting status on pull requests...")
+          logger.info(s"Setting status on pull request(s)...")
 
           for {
             br <- merge.branches
@@ -165,6 +165,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
             githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
           }
 
+          logger.info(s"Error status set to pull request(s)")
+
           s"Failed to merge: ${e.getMessage}"
         }
       }
@@ -174,7 +176,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
   }
 
   def mergeFor(pr: GitPullRequest) = {
-    logger.info(s"Querying GitHub for open pull requests...")
+    logger.info(s"Querying GitHub for open pull request(s)...")
     val listFilter = github.models.PullRequestListOption(
       base      = Some(pr.base.branch),
       sort      = github.models.IssueSort.created,
@@ -331,6 +333,9 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         logger.error(s"Merge failed so $integrationBranch will not be pushed...")
         val desc = s"Failed to merge ${failBranch.label}: ${mergeFailure.getMergeStatus}"
         logger.error(desc)
+
+        logger.info(s"Setting status on pull request(s)...")
+
         for {
           br <- m.branches
         } yield {
@@ -343,6 +348,9 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
           
         }
+
+        logger.info(s"Failure status set to pull request(s)")
+
         desc
       }
       case None => {
@@ -358,6 +366,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           .setTransportConfigCallback(transportConfigCallback)
           .call()
 
+        logger.info(s"Setting status on pull request(s)...")
+
         for {
           br <- m.branches
         } yield {
@@ -368,6 +378,8 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           )
           githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
         }
+
+        logger.info(s"Success status set to pull request(s)")
 
         val branchNames = m.branches.map { br =>
           s"'${br.owner}/${br.branch}'"
