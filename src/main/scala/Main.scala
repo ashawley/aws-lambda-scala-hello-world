@@ -55,7 +55,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     getClass.
       getClassLoader.
       getResourceAsStream(sshConfig.publicKey)).mkString
-  
+
   val knownHosts: java.io.InputStream =
     getClass.getClassLoader.getResourceAsStream(sshConfig.knownHostsFileName)
 
@@ -346,7 +346,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           )
           logger.info(s"Setting status of ${br.label} to $desc")
           githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
-          
+
         }
 
         logger.info(s"Failure status set to pull request(s)")
@@ -354,7 +354,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         desc
       }
       case None => {
-    
+
         // Push if merge above succeeded
 
         logger.info(s"Pushing $integrationBranch...")
