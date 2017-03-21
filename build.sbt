@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "3.8.8" % "test",
   "org.specs2" %% "specs2-mock" % "3.8.8" % "test",
   "org.specs2" %% "specs2-scalacheck" % "3.8.8" % "test",
-  "io.verizon.knobs" %% "typesafe" % "3.12.27a",
+  "io.verizon.knobs" %% "typesafe" % "4.0.30-scalaz-7.2",
   "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
   "com.amazonaws" % "aws-lambda-java-events" % "1.3.0",
   "com.amazonaws" % "aws-lambda-java-log4j" % "1.0.0",
