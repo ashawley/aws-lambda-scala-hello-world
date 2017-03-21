@@ -163,7 +163,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
               description = Some(e.getMessage.take(1024)),
               context = Some("continuous-integration")
             )
-            githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+            Await.ready(
+              githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
+              Duration.Inf
+            )
           }
 
           logger.info(s"Error status set to pull request(s)")
@@ -254,7 +257,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         description = Some("Continuously integrating..."),
         context = Some("continuous-integration")
       )
-      githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+      Await.ready(
+        githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
+        Duration.Inf
+      )
 
       val repoURI = gitURI(br)
       val refSpec =
@@ -346,8 +352,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
             context = Some("continuous-integration")
           )
           logger.info(s"Setting status of ${br.label} to $desc")
-          githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
-
+          Await.ready(
+            githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
+            Duration.Inf
+          )
         }
 
         logger.info(s"Failure status set to pull request(s)")
@@ -377,7 +385,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
             description = Some("Continuous integration succeeded"),
             context = Some("continuous-integration")
           )
-          githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
+          Await.ready(
+            githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
+            Duration.Inf
+          )
         }
 
         logger.info(s"Success status set to pull request(s)")
