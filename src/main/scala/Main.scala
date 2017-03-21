@@ -159,7 +159,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
           } yield {
             val status = github.models.StatusInput(
               github.models.StatusState.error,
-              description = Some(e.getMessage),
+              description = Some(e.getMessage.take(1024)),
               context = Some("continuous-integration")
             )
             githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status)
@@ -341,7 +341,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         } yield {
           val status = github.models.StatusInput(
             github.models.StatusState.failure,
-            description = Some(desc),
+            description = Some(desc.take(1024)),
             context = Some("continuous-integration")
           )
           logger.info(s"Setting status of ${br.label} to $desc")
