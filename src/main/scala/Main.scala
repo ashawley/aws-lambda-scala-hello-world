@@ -19,6 +19,7 @@ import org.json4s.native.JsonMethods._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.global
 
 import scala.collection.JavaConverters._
 
