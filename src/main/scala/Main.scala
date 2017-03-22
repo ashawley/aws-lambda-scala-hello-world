@@ -145,7 +145,28 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     val merges = for {
       pr <- pullRequests if pr.base == repoConfig
     } yield {
+
       val merge = mergeFor(pr)
+
+      logger.info(s"Setting status on pull request(s)...")
+
+      for {
+        br <- merge.branches.groupBy(_.repoFullName).values.map(_.head)
+        if br.owner != merge.from.owner
+      } yield {
+        val status = github.models.StatusInput(
+          github.models.StatusState.pending,
+          description = Some("Continuously integrating..."),
+          context = Some("continuous-integration")
+        )
+        Await.ready(
+          githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
+          Duration.Inf
+        )
+      }
+
+      logger.info(s"Pending status set to pull request(s)")
+
       try {
         doMerge(merge)
       } catch {
@@ -251,16 +272,6 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       br <- m.branches.groupBy(_.repoFullName).values.map(_.head)
       if br.owner != m.from.owner
     } yield {
-
-      val status = github.models.StatusInput(
-        github.models.StatusState.pending,
-        description = Some("Continuously integrating..."),
-        context = Some("continuous-integration")
-      )
-      Await.ready(
-        githubApi.createStatus(repoConfig.owner, repoConfig.repo, br.sha, status),
-        Duration.Inf
-      )
 
       val repoURI = gitURI(br)
       val refSpec =
