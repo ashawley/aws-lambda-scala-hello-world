@@ -151,8 +151,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       logger.info(s"Setting status on pull request(s)...")
 
       for {
-        br <- merge.branches.groupBy(_.repoFullName).values.map(_.head)
-        if br.owner != merge.from.owner
+        br <- merge.branches.groupBy(_.remote).values.map(_.head)
       } yield {
         val status = github.models.StatusInput(
           github.models.StatusState.pending,
