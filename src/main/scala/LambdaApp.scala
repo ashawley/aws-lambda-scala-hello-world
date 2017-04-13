@@ -46,7 +46,39 @@ trait LambdaApp {
       |      }
       |    }
       |  }
-      |}""".stripMargin
+      |}
+      |""".stripMargin
+
+  /**
+   * Trimmed down example from
+   * https://developer.github.com/v3/activity/events/types/#pushevent
+   */
+  val pushEvent: String =
+    """{
+      |  "ref": "refs/heads/changes",
+      |  "before": "9049f1265b7d61be4a8904a9a27120d2064dab3b",
+      |  "after": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      |  "commits": [
+      |  ],
+      |  "head_commit": {
+      |    "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      |    "tree_id": "f9d2a07e9488b91af2641b26b9407fe22a451433"
+      |  },
+      |  "repository": {
+      |    "name": "public-repo",
+      |    "full_name": "baxterthehacker/public-repo",
+      |    "owner": {
+      |      "name": "baxterthehacker"
+      |    },
+      |  },
+      |  "pusher": {
+      |    "name": "baxterthehacker"
+      |  },
+      |  "sender": {
+      |    "login": "baxterthehacker"
+      |  }
+      |}
+      |""".stripMargin
 
   // {
   //   "Records": [
@@ -78,14 +110,14 @@ trait LambdaApp {
   val snsEvent = {
     val m = new SNSEvent.MessageAttribute
     m.setType("String")
-    m.setValue("pull_request")
+    m.setValue("push")
     val s = new SNSEvent.SNS
     s.setSignatureVersion("1")
     s.setTimestamp(new org.joda.time.DateTime("1970-01-01T00:00:00.000Z"))
     s.setSignature("EXAMPLE")
     s.setSigningCertUrl("EXAMPLE")
     s.setMessageId("95df01b4-ee98-5cb9-9903-4c221d41eb5e")
-    s.setMessage(pullRequestEvent)
+    s.setMessage(pushEvent)
     s.setMessageAttributes(
       Map("X-Github-Event" -> m).asJava)
     s.setType("Notification")
@@ -141,8 +173,6 @@ trait LambdaApp {
     println("[")
     println("  " + result.asScala.map(escString(_)).mkString(",\n  "))
     println("]")
-
-    cleanUp()
   }
 
   def escString(s: String) =

@@ -99,7 +99,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
   def safeList[A](xs: java.util.List[A]) =
     Option(xs).map(_.asScala).getOrElse(List.empty[A])
 
-  def handler(e: SNSEvent)  = {
+  def handler(e: SNSEvent) = {
 
     // Provided by sbt-buildinfo plugin
     logger.info(s"Starting ${BuildInfo.name} ${BuildInfo.version}")
@@ -108,9 +108,9 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     val events = for {
       r <- safeList(e.getRecords)
       (key, attribute) <- r.getSNS.getMessageAttributes.asScala
-      if key == "X-Github-Event" && attribute.getValue == "pull_request"
+      if key == "X-Github-Event" && (attribute.getValue == "pull_request" || attribute.getValue == "push")
     } yield {
-      github.events.GitHubEvent("pull_request", parse(r.getSNS.getMessage))
+      github.events.GitHubEvent(attribute.getValue, parse(r.getSNS.getMessage))
     }
 
     logger.info(s"Processed ${events.size} event(s)")
@@ -131,6 +131,28 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
             e.pull_request.head.sha
           ),
           e.pull_request.head.sha
+        )
+      case e: github.events.PushEvent if e.ref == s"refs/heads/$integrationBranch" =>
+        logger.error(s"Push event was ${e.ref}")
+        throw new RuntimeException("Ignoring push event that was for integration branch")
+      case e: github.events.PushEvent if e.ref != s"refs/heads/${repoConfig.branch}" =>
+        logger.error(s"Push event was ${e.ref}")
+        throw new RuntimeException("Ignoring push event that wasn't for base branch")
+      case e: github.events.PushEvent if e.ref != s"refs/heads/$integrationBranch" && e.ref == s"refs/heads/${repoConfig.branch}" =>
+        GitPullRequest(
+          GitBranch(
+            e.repository.owner.name.get, // JSON is missing login?
+            e.repository.name,
+            repoConfig.branch,
+            e.before
+          ),
+          GitBranch(
+            e.sender.login,
+            e.repository.name,
+            e.ref,
+            e.head_commit.tree_id
+          ),
+          e.after
         )
     }
 
