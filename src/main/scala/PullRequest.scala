@@ -16,4 +16,9 @@ case class GitBranch(
   lazy val repoFullName = s"$owner/$repo"
   lazy val remote = s"$owner/$branch"
   lazy val label = s"$owner:$branch"
+  override def equals(o: Any) = o match {
+    // Only compare owner, repo and branch.  Ignore sha.
+    case that: GitBranch => this.toString == that.toString
+    case _ => false
+  }
 }
