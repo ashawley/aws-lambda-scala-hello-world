@@ -150,7 +150,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
             e.sender.login,
             e.repository.name,
             e.ref,
-            e.head_commit.tree_id
+            e.after
           ),
           e.after
         )
