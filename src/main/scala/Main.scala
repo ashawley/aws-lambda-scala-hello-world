@@ -21,6 +21,10 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.global
 
+import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
+
 import scala.collection.JavaConverters._
 
 object Main extends LambdaApp with scalalogging.StrictLogging {
@@ -99,7 +103,7 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
   def safeList[A](xs: java.util.List[A]) =
     Option(xs).map(_.asScala).getOrElse(List.empty[A])
 
-  def handler(e: SNSEvent) = {
+  def handler(e: SNSEvent) = Try {
 
     // Provided by sbt-buildinfo plugin
     logger.info(s"Starting ${BuildInfo.name} ${BuildInfo.version}")
@@ -219,6 +223,12 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     }
     client.close
     merges.asJava
+  } match {
+    case Success(v) => v
+    case Failure(e: Throwable) => {
+      logger.error(e.getMessage)
+      List(e.getMessage).asJava
+    }
   }
 
   def mergeFor(pr: GitPullRequest) = {
