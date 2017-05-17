@@ -1,27 +1,27 @@
-scalaVersion  := "2.11.8"
+scalaVersion  := "2.11.11"
 
 name := "aws-gh-prs"
 
 version := "0.1-SNAPSHOT"
 
 libraryDependencies ++= Seq(
-  "org.specs2" %% "specs2-core" % "3.8.8" % "test",
-  "org.specs2" %% "specs2-mock" % "3.8.8" % "test",
-  "org.specs2" %% "specs2-scalacheck" % "3.8.8" % "test",
-  "io.verizon.knobs" %% "typesafe" % "4.0.30-scalaz-7.2",
+  "org.specs2" %% "specs2-core" % "3.8.9" % "test",
+  "org.specs2" %% "specs2-mock" % "3.8.9" % "test",
+  "org.specs2" %% "specs2-scalacheck" % "3.8.9" % "test",
+  "io.verizon.knobs" %% "typesafe" % "4.0.31-scalaz-7.2",
   "com.amazonaws" % "aws-lambda-java-core" % "1.1.0",
   "com.amazonaws" % "aws-lambda-java-events" % "1.3.0",
   "com.amazonaws" % "aws-lambda-java-log4j" % "1.0.0",
-  "com.ning" % "async-http-client" % "1.9.21",
+  "com.ning" % "async-http-client" % "1.9.40",
   "io.code-check" %% "github-api" % "0.2.0-SNAPSHOT",
-  "org.json4s"    %% "json4s-native" % "3.5.0",
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.6.0.201612231935-r",
-  "org.eclipse.jgit" % "org.eclipse.jgit.junit" % "4.6.0.201612231935-r" % "test",
-  // "com.jcraft" % "jsch" % "0.1.53",
+  "org.json4s"    %% "json4s-native" % "3.5.2",
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.7.0.201704051617-r",
+  "org.eclipse.jgit" % "org.eclipse.jgit.junit" % "4.7.0.201704051617-r" % "test",
+  // "com.jcraft" % "jsch" % "0.1.54",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
-  "org.slf4j" % "slf4j-log4j12" % "1.7.22",
-  "org.slf4j" % "slf4j-nop" % "1.7.22" % "test", // See also [1] below
-  "org.scala-sbt" %% "io" % "1.0.0-M7"
+  "org.slf4j" % "slf4j-log4j12" % "1.7.25",
+  "org.slf4j" % "slf4j-nop" % "1.7.25" % "test", // See also [1] below
+  "org.scala-sbt" %% "io" % "1.0.0-M11"
 )
 
 // 1. Favor slf4j-nop for Test over slf4j-log4j12 for Runtime
