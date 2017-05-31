@@ -225,9 +225,13 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
     merges.asJava
   } match {
     case Success(v) => v
-    case Failure(e: Throwable) => {
+    case Failure(e: RuntimeException) => {
       logger.error(e.getMessage)
       List(e.getMessage).asJava
+    }
+    case Failure(t: Throwable) => {
+      logger.error("Failed for unexpected reason", t)
+      throw t
     }
   }
 
