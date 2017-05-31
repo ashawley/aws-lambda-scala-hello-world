@@ -25,8 +25,8 @@ libraryDependencies ++= Seq(
 )
 
 // 1. Favor slf4j-nop for Test over slf4j-log4j12 for Runtime
-(dependencyClasspath in Test) <<= (dependencyClasspath in Test) map {
-  _.filter {
+dependencyClasspath in Test := {
+  (dependencyClasspath in Test).value.filter {
     _.get(moduleID.key) exists (_.name != "slf4j-log4j12")
   }
 }
