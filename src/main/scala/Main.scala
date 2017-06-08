@@ -221,16 +221,21 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
         }
       }
     }
+    logger.info("Closing async HTTP client")
     client.close
     merges.asJava
   } match {
     case Success(v) => v
     case Failure(e: RuntimeException) => {
       logger.error(e.getMessage)
+      logger.info("Closing async HTTP client")
+      client.close
       List(e.getMessage).asJava
     }
     case Failure(t: Throwable) => {
       logger.error("Failed for unexpected reason", t)
+      logger.info("Closing async HTTP client")
+      client.close
       throw t
     }
   }
