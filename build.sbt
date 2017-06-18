@@ -2,7 +2,7 @@ scalaVersion  := "2.11.11"
 
 name := "aws-gh-prs"
 
-version := "0.2-SNAPSHOT"
+version := "0.2"
 
 libraryDependencies ++= Seq(
   "org.specs2" %% "specs2-core" % "3.8.9" % "test",
