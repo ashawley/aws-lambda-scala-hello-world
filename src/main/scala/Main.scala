@@ -29,11 +29,11 @@ import scala.collection.JavaConverters._
 
 object Main extends LambdaApp with scalalogging.StrictLogging {
 
-  val config = Typesafe.config.unsafePerformSync
+  lazy val config = Typesafe.config.unsafePerformSync
 
   val tmpRoot = sbt.io.IO.createTemporaryDirectory
 
-  val sshConfig = SshConfig(
+  lazy val sshConfig = SshConfig(
     knownHostsFileName = config.require[String]("ssh.known-hosts-file"),
     privateKey         = config.require[String]("ssh.private-key-name"),
     publicKey          = config.require[String]("ssh.public-key-name"),
@@ -41,15 +41,15 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
   )
 
   // Validate these:
-  val repoConfig = GitBranch(
+  lazy val repoConfig = GitBranch(
     owner  = config.require[String]("git.owner"),
     repo   = config.require[String]("git.repo"),
     branch = config.require[String]("git.base"),
     sha = "HEAD" // Dummy value
   )
 
-  val gitUser = config.require[String]("git.user.name")
-  val gitEmail = config.require[String]("git.user.email")
+  lazy val gitUser = config.require[String]("git.user.name")
+  lazy val gitEmail = config.require[String]("git.user.email")
 
   lazy val sshKey = scala.io.Source.fromInputStream(
     getClass.
@@ -61,15 +61,15 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
       getClassLoader.
       getResourceAsStream(sshConfig.publicKey)).mkString
 
-  val knownHosts: java.io.InputStream =
+  lazy val knownHosts: java.io.InputStream =
     getClass.getClassLoader.getResourceAsStream(sshConfig.knownHostsFileName)
 
-  val integrationBranch = config.require[String]("git.onto")
+  lazy val integrationBranch = config.require[String]("git.onto")
 
-  val githubToken = config.require[String]("github.token")
+  lazy val githubToken = config.require[String]("github.token")
 
-  val client = new github.transport.asynchttp19.AsyncHttp19Transport(new AsyncHttpClient())
-  val githubApi = new github.api.GitHubAPI(githubToken, client)
+  lazy val client = new github.transport.asynchttp19.AsyncHttp19Transport(new AsyncHttpClient())
+  lazy val githubApi = new github.api.GitHubAPI(githubToken, client)
 
   val sshSessionFactory = new jgit.transport.JschConfigSessionFactory {
 
