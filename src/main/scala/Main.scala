@@ -283,6 +283,10 @@ object Main extends LambdaApp with scalalogging.StrictLogging {
 
     logger.info(s"Working directory is $tmpRoot")
 
+    val megsOfDisk = tmpRoot.getFreeSpace / 1024 / 1024
+
+    logger.info(s"Free space is ${megsOfDisk}M")
+
     logger.info(s"Cloning $upstream...")
 
     val git = jgit.api.Git.cloneRepository()
