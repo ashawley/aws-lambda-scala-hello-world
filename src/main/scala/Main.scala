@@ -6,7 +6,7 @@ object Main extends LambdaApp  {
 
   def handler()  = {
 
-    println("Hello Cloudwatch")
+    println("Hello Scala")
 
     List("Hello Lambda").toSeq.asJava
   }
